@@ -1,10 +1,20 @@
-import  {useState} from 'react';
-import { SliderData } from './imageslider';
+import  {useState, useEffect } from 'react';
+// import { SliderData } from './imageslider';
 import './App.css';
-
-
-// const length =  slides.length;
+import axios from 'axios';
 function App() {
+
+  const [SliderData, setSliderData] = useState([]);
+
+  useEffect(() => {
+     const fetchData = async() => {
+       const { data } = await axios.get("https://reqres.in/api/users");
+       setSliderData(data.data);
+       console.log(data.data);
+     }
+     fetchData();
+  },[])
+
   const [current, setCurrent] = useState(0);
 
   const length = SliderData.length;
@@ -13,18 +23,13 @@ function App() {
     setCurrent(current === length - 1 ? 0 : current + 1);
     console.log(current);
   }
-
   const prevSlide = () => {
     setCurrent(current === 0 ? length - 1 : current - 1);
     console.log(current);
   }
-
-
   if(!Array.isArray(SliderData) || SliderData.length <= 0){
     return null;
   }
-
-
   return (
     <div className="App">
       <section className="slider">
@@ -33,7 +38,11 @@ function App() {
       {
         SliderData.map((slide, index) => {
           return  <div className={index === current ? 'slide active' : 'slide'} key={index}>
-                    {index === current && (<img src={slide.image} className="image" />)}
+                    {index === current && (
+                    
+                    <img src={slide.avatar} className="image" />
+                    
+                    )}
           </div>
         } )
       }
